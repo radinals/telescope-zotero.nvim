@@ -134,7 +134,7 @@ M.locate_org_bib = function()
   return "references.bib"
 end
 
-local bibtex_translation = []
+local bibtex_translation = {}
 
 bibtex_translation['article'] = 'article'
 bibtex_translation['article-journal'] = 'article'
