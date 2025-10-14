@@ -149,7 +149,7 @@ local getLatexBibType = function()
       if location then
         return "biblatex"
       end
-      location = string.match(line, [[\addbibresource{[ "']*([^'"\{\}]+)["' ]*}]])
+      local location = string.match(line, [[\bibliography{[ "']*([^'"\{\}]+)["' ]*}]])
       if location then
         return "bibtex"
       end
