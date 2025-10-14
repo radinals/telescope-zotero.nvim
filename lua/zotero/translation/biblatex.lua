@@ -1,4 +1,4 @@
-local translations = []
+local translations = {}
 translations['article'] = 'article'
 translations['article-journal'] = 'article'
 translations['article-magazine'] = { type = 'article', subtype = 'magazine' }
