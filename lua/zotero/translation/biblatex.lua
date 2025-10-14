@@ -75,22 +75,19 @@ translations['videoRecording'] = 'video'
 translations['webpage'] = 'online'
 
 
-return function translateToBiblatex(type)
+return function(type)
   local translation = translations[type]
-
   local translated = ""
 
-  if (translation.type)
+  if (translation.type) then
     translated = translated .. translation.type
   end
-
-  if (translation.subtype)
+  if (translation.subtype) then
     translated = translated .. "[" .. translation.subtype .. "]"
   end
 
   return translated
 end
-
 
 
 

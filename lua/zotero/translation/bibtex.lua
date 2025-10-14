@@ -69,7 +69,7 @@ translation['tvBroadcast'] =  'misc'
 translation['videoRecording'] =  'misc'
 translation['webpage'] =  'misc'
 
-return function translateToBibTex(type)
+return function(type)
   return translation[type
 end
 
