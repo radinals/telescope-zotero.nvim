@@ -165,12 +165,12 @@ M.entry_to_bib_entry = function(entry)
   local item = entry.value
   local citekey = item.citekey or ''
 
-  local type = entry
+  local type = item.itemType
 
   if (getLatexBibType() == "biblatex") then
-    type = biblatex(entry)
+    type = biblatex(type)
   elseif(getLatexBibType() == "bibtex") then
-    type = bibtex(entry)
+    type = bibtex(type)
   end
 
   bib_entry = bib_entry .. type or " " .. '{' .. citekey .. ',\n'
