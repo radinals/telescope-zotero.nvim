@@ -165,15 +165,15 @@ M.entry_to_bib_entry = function(entry)
   local item = entry.value
   local citekey = item.citekey or ''
 
-  local type = item.itemType
+  local itemType = item.itemType
 
   if (getLatexBibType() == "biblatex") then
-    type = biblatex(type)
+    itemType = biblatex(itemType)
   elseif(getLatexBibType() == "bibtex") then
-    type = bibtex(type)
+    itemType = bibtex(itemType)
   end
 
-  bib_entry = bib_entry .. (type or " ") .. '{' .. citekey .. ',\n'
+  bib_entry = bib_entry .. (itemType or " ") .. '{' .. citekey .. ',\n'
 
   for k, v in pairs(item) do
     if k == 'creators' then
