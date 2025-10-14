@@ -1,4 +1,8 @@
 -- (Crudely) Locates the bibliography
+--
+--
+local biblatex = require("zotero.translation.biblatex")
+local bibtex = require("zotero.translation.bibtex")
 
 local M = {}
 
@@ -134,86 +138,42 @@ M.locate_org_bib = function()
   return "references.bib"
 end
 
-local bibtex_translation = {}
+local getLatexBibType = function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  for _, line in ipairs(lines) do
+    -- ignore commented bibliography
+    local comment = string.match(line, '^%%')
+    if not comment then
+      -- checking for biblatex
+      local location = string.match(line, [[\addbibresource{[ "']*([^'"\{\}]+)["' ]*}]])
+      if location then
+        return "biblatex"
+      end
+      location = string.match(line, [[\addbibresource{[ "']*([^'"\{\}]+)["' ]*}]])
+      if location then
+        return "bibtex"
+      end
 
-bibtex_translation['article'] = 'article'
-bibtex_translation['article-journal'] = 'article'
-bibtex_translation['article-newspaper'] = 'article'
-bibtex_translation['bill'] = 'misc'
-bibtex_translation['book'] = 'book'
-bibtex_translation['broadcast'] = 'book'
-bibtex_translation['chapter'] = 'incollection'
-bibtex_translation['dataset'] = 'misc'
-bibtex_translation['entry'] = 'incollection'
-bibtex_translation['entry-dictionary'] = 'incollection'
-bibtex_translation['entry-encyclopedia'] = 'incollection'
-bibtex_translation['figure'] = 'misc'
-bibtex_translation['graphic'] = 'misc'
-bibtex_translation['interview'] = 'misc'
-bibtex_translation['legal_case'] = 'misc'
-bibtex_translation['legislation'] = 'misc'
-bibtex_translation['manuscript'] = 'unpublished'
-bibtex_translation['map'] = 'misc'
-bibtex_translation['motion_picture'] = 'misc'
-bibtex_translation['musical_score'] = 'misc'
-bibtex_translation['pamphlet'] = 'booklet'
-bibtex_translation['paper-conference'] = 'inproceedings'
-bibtex_translation['patent'] = 'misc'
-bibtex_translation['personal_communication'] = 'misc'
-bibtex_translation['post'] = 'misc'
-bibtex_translation['post-weblog'] = 'misc'
-bibtex_translation['report'] = 'techreport'
-bibtex_translation['review'] = 'article'
-bibtex_translation['review-book'] = 'article'
-bibtex_translation['song'] = 'misc'
-bibtex_translation['speech'] = 'misc'
-bibtex_translation['thesis'] = 'phdthesis'
-bibtex_translation['treaty'] = 'misc'
-bibtex_translation['webpage'] = 'misc'
-bibtex_translation['artwork'] =  'misc'
-bibtex_translation['audioRecording'] =  'misc'
-bibtex_translation['bill'] =  'misc'
-bibtex_translation['blogPost'] =  'misc'
-bibtex_translation['book'] =  'book'
-bibtex_translation['bookSection'] =  'incollection'
-bibtex_translation['case'] =  'misc'
-bibtex_translation['computerProgram'] =  'misc'
-bibtex_translation['conferencePaper'] =  'inproceedings'
-bibtex_translation['dictionaryEntry'] =  'misc'
-bibtex_translation['document'] =  'misc'
-bibtex_translation['email'] =  'misc'
-bibtex_translation['encyclopediaArticle'] =  'article'
-bibtex_translation['film'] =  'misc'
-bibtex_translation['forumPost'] =  'misc'
-bibtex_translation['hearing'] =  'misc'
-bibtex_translation['instantMessage'] =  'misc'
-bibtex_translation['interview'] =  'misc'
-bibtex_translation['journalArticle'] =  'article'
-bibtex_translation['letter'] =  'misc'
-bibtex_translation['magazineArticle'] =  'article'
-bibtex_translation['manuscript'] =  'unpublished'
-bibtex_translation['map'] =  'misc'
-bibtex_translation['newspaperArticle'] =  'article'
-bibtex_translation['patent'] =  'patent'
-bibtex_translation['podcast'] =  'misc'
-bibtex_translation['preprint'] =  'misc'
-bibtex_translation['presentation'] =  'misc'
-bibtex_translation['radioBroadcast'] =  'misc'
-bibtex_translation['report'] =  'techreport'
-bibtex_translation['statute'] =  'misc'
-bibtex_translation['thesis'] =  'phdthesis'
-bibtex_translation['tvBroadcast'] =  'misc'
-bibtex_translation['videoRecording'] =  'misc'
-bibtex_translation['webpage'] =  'misc'
-  
+      return "UNKNOWN"
+
+    end
+  end
+end
 
 M.entry_to_bib_entry = function(entry)
   local bib_entry = '@'
   local item = entry.value
   local citekey = item.citekey or ''
-  local translated_type = bibtex_translation[item.itemType] or " "
 
-  bib_entry = bib_entry .. ( translated_type ) .. '{' .. citekey .. ',\n'
+  local type = entry
+
+  if (getLatexBibType() == "biblatex") then
+    type = biblatex(entry)
+  elseif(getLatexBibType() == "bibtex") then
+    type = bibtex(entry)
+  end
+
+  bib_entry = bib_entry .. ( type or " " ) .. '{' .. citekey .. ',\n'
 
   for k, v in pairs(item) do
     if k == 'creators' then
