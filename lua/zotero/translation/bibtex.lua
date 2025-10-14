@@ -70,6 +70,6 @@ translation['videoRecording'] =  'misc'
 translation['webpage'] =  'misc'
 
 return function(type)
-  return translation[type
+  return translation[type]
 end
 
