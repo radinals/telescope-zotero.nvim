@@ -173,7 +173,7 @@ M.entry_to_bib_entry = function(entry)
     type = bibtex(entry)
   end
 
-  bib_entry = bib_entry .. ( type or " " ) .. '{' .. citekey .. ',\n'
+  bib_entry = bib_entry .. type or " " .. '{' .. citekey .. ',\n'
 
   for k, v in pairs(item) do
     if k == 'creators' then
