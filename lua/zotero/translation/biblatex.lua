@@ -79,11 +79,10 @@ return function(type)
   local translation = translations[type]
   local translated = ""
 
-  if (translation.type) then
-    translated = translated .. translation.type
-  end
-  if (translation.subtype) then
-    translated = translated .. "[" .. translation.subtype .. "]"
+  if (translation.type and translation.subtype) then
+    translated = translated.type .. "[" .. translation.subtype .. "]"
+  else
+    translated = translation
   end
 
   return translated
