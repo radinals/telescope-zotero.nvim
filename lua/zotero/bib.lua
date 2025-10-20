@@ -171,6 +171,8 @@ M.entry_to_bib_entry = function(entry)
     itemType = biblatex(itemType)
   elseif(getLatexBibType() == "bibtex") then
     itemType = bibtex(itemType)
+  elseif(vim.bo.filetype == "tex") then
+    itemType = bibtex(itemType)
   end
 
   bib_entry = bib_entry .. (itemType or " ") .. '{' .. citekey .. ',\n'
